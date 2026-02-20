@@ -26,7 +26,7 @@ link 33554436 ~> __macos_write(fd:int, buf:str, count:int) -> int;
  * @param text  The string to write
  */
 ~> write_stdout(text:str) {
-  rock n:int = strlen(text);
+  rock n:int = memory.strlen(text);
   match (PLATFORM) {
     1 -> {
       rock stdout:rawptr = GetStdHandle(-11);
