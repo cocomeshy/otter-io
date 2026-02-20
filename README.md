@@ -42,7 +42,7 @@ Initialize the I/O subsystem. Currently a no-op, reserved for future use.
 
 ## Dependencies
 
-- `memory` — for `strlen`, `str_concat`
+- `memory` — for `strlen`
 
 ## Install
 
