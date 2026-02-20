@@ -1,0 +1,53 @@
+use memory;
+
+link "kernel32.dll" ~> WriteFile(
+  hFile:rawptr,
+  lpBuffer:str,
+  nNumberOfBytesToWrite:int,
+  lpNumberOfBytesWritten:rawptr,
+  lpOverlapped:rawptr
+) -> int;
+
+link "kernel32.dll" ~> GetStdHandle(nStdHandle:int) -> rawptr;
+
+link 1 ~> __linux_write(fd:int, buf:str, count:int) -> int;
+link 33554436 ~> __macos_write(fd:int, buf:str, count:int) -> int;
+
+/**
+ * Initializes the I/O subsystem.
+ * Currently a no-op; reserved for future buffered I/O setup.
+ */
+~> io_init() {
+}
+
+/**
+ * Writes a raw string to stdout. Platform-dispatched:
+ * Windows uses WriteFile via GetStdHandle, Linux/macOS use write syscalls.
+ * @param text  The string to write
+ */
+~> write_stdout(text:str) {
+  rock n:int = strlen(text);
+  match (PLATFORM) {
+    1 -> {
+      rock stdout:rawptr = GetStdHandle(-11);
+      WriteFile(stdout, text, n, null, null);
+    };
+    0 -> {
+      __linux_write(1, text, n);
+    };
+    2 -> {
+      __macos_write(1, text, n);
+    };
+    _ -> {};
+  }
+}
+
+/**
+ * Prints text to stdout followed by a line ending.
+ * @param text  The string to print
+ * @param end   Line terminator, defaults to newline
+ */
+~> out(text:str, end:str = "\n") {
+  write_stdout(text);
+  write_stdout(end);
+}

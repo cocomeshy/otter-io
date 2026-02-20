@@ -1,0 +1,13 @@
+rune 1
+name "io"
+version "1.0.0"
+description "Cross-platform standard I/O for stdout and formatted printing"
+author "cocomeshy"
+license "MIT"
+entry io.otter
+
+use "memory" want "1.0.0"
+
+export io_init
+export write_stdout
+export out
